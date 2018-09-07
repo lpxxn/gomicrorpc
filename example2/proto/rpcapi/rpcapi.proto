@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package rpcapi;
+import "github.com/lpxxn/gomicrorpc/example2/proto/model/common.proto";
+
+// 服务接口
+service Say {
+    rpc Hello(model.SayParam) returns (model.SayResponse) {}
+    rpc Stream(model.SRequest) returns (stream model.SResponse) {}
+
+}
