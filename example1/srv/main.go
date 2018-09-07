@@ -38,6 +38,14 @@ func main() {
 		micro.Registry(reg),
 	)
 
+	// 如果你用的是consul把上面的注释掉用下面的
+	/*
+	// 初始化服务
+	service := micro.NewService(
+		micro.Name("lp.srv.eg1"),
+	)
+	 */
+
 	// 注册 Handler
 	model.RegisterSayHandler(service.Server(), new(Say))
 
