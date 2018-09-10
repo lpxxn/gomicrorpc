@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/lpxxn/gomicrorpc/example1/proto"
+	"github.com/lpxxn/gomicrorpc/example2/proto/model"
+	"github.com/lpxxn/gomicrorpc/example2/proto/rpcapi"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/etcdv3"
@@ -30,7 +31,7 @@ func main() {
 	)
 	 */
 
-	sayClent := model.NewSayService("lp.srv.eg1", service.Client())
+	sayClent := rpcapi.NewSayService("lp.srv.eg1", service.Client())
 
 
 	rsp, err := sayClent.Hello(context.Background(), &model.SayParam{Msg: "hello server"})
