@@ -8,6 +8,9 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/etcdv3"
+	"io"
+	"os"
+	"os/signal"
 )
 
 func main() {
@@ -31,14 +34,51 @@ func main() {
 	)
 	 */
 
-	sayClent := rpcapi.NewSayService("lp.srv.eg1", service.Client())
+	sayClent := rpcapi.NewSayService("lp.srv.eg2", service.Client())
 
+	SayHello(sayClent)
+	go GetStreamValues(sayClent)
 
-	rsp, err := sayClent.Hello(context.Background(), &model.SayParam{Msg: "hello server"})
+	st := make(chan os.Signal)
+	signal.Notify(st, os.Interrupt)
+
+	<- st
+	fmt.Println("server stopped.....")
+}
+
+func SayHello(client rpcapi.SayService) {
+	rsp, err := client.Hello(context.Background(), &model.SayParam{Msg: "hello server"})
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(rsp)
-
 }
+
+// test stream
+func GetStreamValues(client rpcapi.SayService) {
+	rspStream, err := client.Stream(context.Background(), &model.SRequest{Count: 10})
+	if err != nil {
+		panic(err)
+	}
+
+	idx := 1
+	for  {
+		rsp, err := rspStream.Recv()
+
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("test stream get idx %d  data  %v\n", idx, rsp)
+		idx++
+	}
+	fmt.Println("Read Value End")
+}
+
+
+
+
+

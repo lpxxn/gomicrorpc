@@ -33,5 +33,5 @@ message SRequest {
 }
 
 message SResponse {
-    int64 count = 1;
+    repeated string value = 1;
 }
