@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/lpxxn/gomicrorpc/example2/common"
+	"github.com/lpxxn/gomicrorpc/example2/lib"
 	"github.com/lpxxn/gomicrorpc/example2/proto/model"
 	"github.com/lpxxn/gomicrorpc/example2/proto/rpcapi"
 	"github.com/micro/go-micro"
@@ -34,10 +36,11 @@ func main() {
 	)
 	 */
 
-	sayClent := rpcapi.NewSayService("lp.srv.eg2", service.Client())
+	sayClent := rpcapi.NewSayService(common.ServiceName, service.Client())
 
 	SayHello(sayClent)
-	go GetStreamValues(sayClent)
+	NotifyTopic(service)
+	GetStreamValues(sayClent)
 
 	st := make(chan os.Signal)
 	signal.Notify(st, os.Interrupt)
@@ -78,6 +81,11 @@ func GetStreamValues(client rpcapi.SayService) {
 	fmt.Println("Read Value End")
 }
 
+
+func NotifyTopic(service micro.Service) {
+	p := micro.NewPublisher(common.Topic1, service.Client())
+	p.Publish(context.TODO(), &model.SayParam{Msg: lib.RandomStr(lib.Random(3, 10))})
+}
 
 
 

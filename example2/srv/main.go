@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/lpxxn/gomicrorpc/example2/common"
 	"github.com/lpxxn/gomicrorpc/example2/handler"
 	"github.com/lpxxn/gomicrorpc/example2/proto/rpcapi"
 	"github.com/lpxxn/gomicrorpc/example2/subscriber"
@@ -8,6 +9,7 @@ import (
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/server"
 	"github.com/micro/go-plugins/registry/etcdv3"
+	"time"
 )
 
 
@@ -21,7 +23,9 @@ func main() {
 
 	// 初始化服务
 	service := micro.NewService(
-		micro.Name("lp.srv.eg2"),
+		micro.Name(common.ServiceName),
+		micro.RegisterTTL(time.Second*30),
+		micro.RegisterInterval(time.Second*10),
 		micro.Registry(reg),
 	)
 
@@ -38,7 +42,7 @@ func main() {
 
 
 	// Register Subscribers
-	if err := server.Subscribe(server.NewSubscriber("lp.srv.eg1.topic1", subscriber.Handler)); err != nil {
+	if err := server.Subscribe(server.NewSubscriber(common.Topic1, subscriber.Handler)); err != nil {
 		panic(err)
 	}
 

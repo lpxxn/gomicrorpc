@@ -7,6 +7,6 @@ import (
 )
 
 func Handler(ctx context.Context, msg *model.SayParam) error {
-	fmt.Printf("Received message: ", msg.Msg)
+	fmt.Printf("Received message: %s \n", msg.Msg)
 	return nil
 }
