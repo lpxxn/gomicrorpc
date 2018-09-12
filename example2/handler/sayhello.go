@@ -25,6 +25,11 @@ func (s *Say) Hello(ctx context.Context, req *model.SayParam, rsp *model.SayResp
 	return nil
 }
 
+func (s *Say) MyName(ctx context.Context, req *model.SayParam, rsp *model.SayParam) error {
+	rsp.Msg = "lp"
+	return nil
+}
+
 /*
  模拟得到一些数据
  */

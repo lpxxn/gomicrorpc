@@ -43,6 +43,7 @@ var _ server.Option
 
 type SayService interface {
 	Hello(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayResponse, error)
+	MyName(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayParam, error)
 	Stream(ctx context.Context, in *model.SRequest, opts ...client.CallOption) (Say_StreamService, error)
 }
 
@@ -67,6 +68,16 @@ func NewSayService(name string, c client.Client) SayService {
 func (c *sayService) Hello(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayResponse, error) {
 	req := c.c.NewRequest(c.name, "Say.Hello", in)
 	out := new(model.SayResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sayService) MyName(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayParam, error) {
+	req := c.c.NewRequest(c.name, "Say.MyName", in)
+	out := new(model.SayParam)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -122,12 +133,14 @@ func (x *sayServiceStream) Recv() (*model.SResponse, error) {
 
 type SayHandler interface {
 	Hello(context.Context, *model.SayParam, *model.SayResponse) error
+	MyName(context.Context, *model.SayParam, *model.SayParam) error
 	Stream(context.Context, *model.SRequest, Say_StreamStream) error
 }
 
 func RegisterSayHandler(s server.Server, hdlr SayHandler, opts ...server.HandlerOption) {
 	type say interface {
 		Hello(ctx context.Context, in *model.SayParam, out *model.SayResponse) error
+		MyName(ctx context.Context, in *model.SayParam, out *model.SayParam) error
 		Stream(ctx context.Context, stream server.Stream) error
 	}
 	type Say struct {
@@ -143,6 +156,10 @@ type sayHandler struct {
 
 func (h *sayHandler) Hello(ctx context.Context, in *model.SayParam, out *model.SayResponse) error {
 	return h.SayHandler.Hello(ctx, in, out)
+}
+
+func (h *sayHandler) MyName(ctx context.Context, in *model.SayParam, out *model.SayParam) error {
+	return h.SayHandler.MyName(ctx, in, out)
 }
 
 func (h *sayHandler) Stream(ctx context.Context, stream server.Stream) error {
