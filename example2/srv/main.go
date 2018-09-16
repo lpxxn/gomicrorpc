@@ -37,6 +37,7 @@ func main() {
 	)
 	 */
 
+	service.Init()
 	// 注册 Handler
 	rpcapi.RegisterSayHandler(service.Server(), new(handler.Say))
 

@@ -35,6 +35,7 @@ func main() {
 		micro.Name("lp.srv.eg1"),
 	)
 	 */
+	service.Init()
 
 	sayClent := rpcapi.NewSayService(common.ServiceName, service.Client())
 
