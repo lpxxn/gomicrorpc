@@ -37,8 +37,8 @@ func main() {
 	)
 	 */
 	service.Init()
-	service.Client().Init(client.Retries(3))
-
+	service.Client().Init(client.Retries(3),
+						  client.PoolSize(5))
 	sayClent := rpcapi.NewSayService(common.ServiceName, service.Client())
 
 	SayHello(sayClent)
