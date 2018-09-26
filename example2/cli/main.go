@@ -8,6 +8,7 @@ import (
 	"github.com/lpxxn/gomicrorpc/example2/proto/model"
 	"github.com/lpxxn/gomicrorpc/example2/proto/rpcapi"
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	"io"
@@ -36,6 +37,7 @@ func main() {
 	)
 	 */
 	service.Init()
+	service.Client().Init(client.Retries(3))
 
 	sayClent := rpcapi.NewSayService(common.ServiceName, service.Client())
 

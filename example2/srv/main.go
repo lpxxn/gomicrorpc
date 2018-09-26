@@ -25,7 +25,7 @@ func main() {
 	service := micro.NewService(
 		micro.Name(common.ServiceName),
 		micro.RegisterTTL(time.Second*30),
-		micro.RegisterInterval(time.Second*10),
+		micro.RegisterInterval(time.Second*20),
 		micro.Registry(reg),
 	)
 
