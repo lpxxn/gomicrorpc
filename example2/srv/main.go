@@ -33,7 +33,9 @@ func main() {
 	/*
 	// 初始化服务
 	service := micro.NewService(
-		micro.Name("lp.srv.eg1"),
+		micro.Name(common.ServiceName),
+		micro.RegisterTTL(time.Second*30),
+		micro.RegisterInterval(time.Second*20),
 	)
 	 */
 
