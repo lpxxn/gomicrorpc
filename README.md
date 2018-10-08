@@ -7,5 +7,5 @@ go微服务框架go-micro深度学习(一) 整体架构介绍  https://www.cnblo
 
 go微服务框架go-micro深度学习(二) 入门例子     https://www.cnblogs.com/li-peng/p/9598879.html
 
-go微服务框架go-micro深度学习(一) 整体架构介绍  https://www.cnblogs.com/li-peng/p/9689786.html
+go微服务框架go-micro深度学习(三) Registry服务的注册和发现  https://www.cnblogs.com/li-peng/p/9689786.html
 
