@@ -19,6 +19,7 @@ func main() {
 
 	// 初始化服务
 	service := micro.NewService(
+		micro.Name("lp.srv.eg1"),
 		micro.Registry(reg),
 	)
 
