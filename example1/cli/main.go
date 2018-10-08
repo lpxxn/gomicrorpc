@@ -29,6 +29,7 @@ func main() {
 		micro.Name("lp.srv.eg1"),
 	)
 	 */
+	service.Init()
 
 	sayClent := model.NewSayService("lp.srv.eg1", service.Client())
 

@@ -45,6 +45,7 @@ func main() {
 		micro.Name("lp.srv.eg1"),
 	)
 	 */
+	service.Init()
 
 	// 注册 Handler
 	model.RegisterSayHandler(service.Server(), new(Say))
