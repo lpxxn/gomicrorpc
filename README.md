@@ -9,3 +9,4 @@ go微服务框架go-micro深度学习(二) 入门例子     https://www.cnblogs.
 
 go微服务框架go-micro深度学习(三) Registry服务的注册和发现  https://www.cnblogs.com/li-peng/p/9689786.html
 
+go微服务框架go-micro深度学习(四) rpc方法调用过程详解  https://www.cnblogs.com/li-peng/p/10365251.html
