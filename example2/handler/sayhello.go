@@ -47,6 +47,21 @@ func (s *Say) Stream(ctx context.Context, req *model.SRequest, stream rpcapi.Say
 		time.Sleep(time.Microsecond * 50)
 	}
 	return nil
+}
 
-	return nil
+/*
+ 模拟数据
+ */
+func (s *Say) BidirectionalStream(ctx context.Context, stream rpcapi.Say_BidirectionalStreamStream) error {
+	for {
+		req, err := stream.Recv()
+		if err != nil {
+			return err
+		}
+		for i := int64(0); i < req.Count; i++ {
+			if err := stream.Send(&model.SResponse{Value: []string {lib.RandomStr(lib.Random(3, 6))}}); err != nil {
+				return err
+			}
+		}
+	}
 }

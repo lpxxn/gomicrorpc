@@ -43,6 +43,7 @@ func main() {
 	SayHello(sayClent)
 	NotifyTopic(service)
 	GetStreamValues(sayClent)
+	TsBidirectionalStream(sayClent)
 
 	st := make(chan os.Signal)
 	signal.Notify(st, os.Interrupt)
@@ -83,6 +84,32 @@ func GetStreamValues(client rpcapi.SayService) {
 	fmt.Println("Read Value End")
 }
 
+func TsBidirectionalStream(client rpcapi.SayService) {
+	rspStream, err := client.BidirectionalStream(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	// send
+	go func() {
+		rspStream.Send(&model.SRequest{Count: 2})
+		rspStream.Send(&model.SRequest{Count: 5})
+	}()
+
+	idx := 1
+	for  {
+		rsp, err := rspStream.Recv()
+
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("test stream get idx %d  data  %v\n", idx, rsp)
+		idx++
+	}
+	fmt.Println("Read Value End")
+}
 
 func NotifyTopic(service micro.Service) {
 	p := micro.NewPublisher(common.Topic1, service.Client())

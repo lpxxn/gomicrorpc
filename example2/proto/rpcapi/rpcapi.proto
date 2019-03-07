@@ -8,5 +8,5 @@ service Say {
     rpc Hello(model.SayParam) returns (model.SayResponse) {}
     rpc MyName(model.SayParam) returns (model.SayParam) {}
     rpc Stream(model.SRequest) returns (stream model.SResponse) {}
-
+    rpc BidirectionalStream(stream model.SRequest) returns (stream model.SResponse) {}
 }

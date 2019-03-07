@@ -17,9 +17,9 @@ import math "math"
 import model "github.com/lpxxn/gomicrorpc/example2/proto/model"
 
 import (
+	context "context"
 	client "github.com/micro/go-micro/client"
 	server "github.com/micro/go-micro/server"
-	context "context"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -45,6 +45,7 @@ type SayService interface {
 	Hello(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayResponse, error)
 	MyName(ctx context.Context, in *model.SayParam, opts ...client.CallOption) (*model.SayParam, error)
 	Stream(ctx context.Context, in *model.SRequest, opts ...client.CallOption) (Say_StreamService, error)
+	BidirectionalStream(ctx context.Context, opts ...client.CallOption) (Say_BidirectionalStreamService, error)
 }
 
 type sayService struct {
@@ -129,25 +130,73 @@ func (x *sayServiceStream) Recv() (*model.SResponse, error) {
 	return m, nil
 }
 
+func (c *sayService) BidirectionalStream(ctx context.Context, opts ...client.CallOption) (Say_BidirectionalStreamService, error) {
+	req := c.c.NewRequest(c.name, "Say.BidirectionalStream", &model.SRequest{})
+	stream, err := c.c.Stream(ctx, req, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &sayServiceBidirectionalStream{stream}, nil
+}
+
+type Say_BidirectionalStreamService interface {
+	SendMsg(interface{}) error
+	RecvMsg(interface{}) error
+	Close() error
+	Send(*model.SRequest) error
+	Recv() (*model.SResponse, error)
+}
+
+type sayServiceBidirectionalStream struct {
+	stream client.Stream
+}
+
+func (x *sayServiceBidirectionalStream) Close() error {
+	return x.stream.Close()
+}
+
+func (x *sayServiceBidirectionalStream) SendMsg(m interface{}) error {
+	return x.stream.Send(m)
+}
+
+func (x *sayServiceBidirectionalStream) RecvMsg(m interface{}) error {
+	return x.stream.Recv(m)
+}
+
+func (x *sayServiceBidirectionalStream) Send(m *model.SRequest) error {
+	return x.stream.Send(m)
+}
+
+func (x *sayServiceBidirectionalStream) Recv() (*model.SResponse, error) {
+	m := new(model.SResponse)
+	err := x.stream.Recv(m)
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Server API for Say service
 
 type SayHandler interface {
 	Hello(context.Context, *model.SayParam, *model.SayResponse) error
 	MyName(context.Context, *model.SayParam, *model.SayParam) error
 	Stream(context.Context, *model.SRequest, Say_StreamStream) error
+	BidirectionalStream(context.Context, Say_BidirectionalStreamStream) error
 }
 
-func RegisterSayHandler(s server.Server, hdlr SayHandler, opts ...server.HandlerOption) {
+func RegisterSayHandler(s server.Server, hdlr SayHandler, opts ...server.HandlerOption) error {
 	type say interface {
 		Hello(ctx context.Context, in *model.SayParam, out *model.SayResponse) error
 		MyName(ctx context.Context, in *model.SayParam, out *model.SayParam) error
 		Stream(ctx context.Context, stream server.Stream) error
+		BidirectionalStream(ctx context.Context, stream server.Stream) error
 	}
 	type Say struct {
 		say
 	}
 	h := &sayHandler{hdlr}
-	s.Handle(s.NewHandler(&Say{h}, opts...))
+	return s.Handle(s.NewHandler(&Say{h}, opts...))
 }
 
 type sayHandler struct {
@@ -195,4 +244,44 @@ func (x *sayStreamStream) RecvMsg(m interface{}) error {
 
 func (x *sayStreamStream) Send(m *model.SResponse) error {
 	return x.stream.Send(m)
+}
+
+func (h *sayHandler) BidirectionalStream(ctx context.Context, stream server.Stream) error {
+	return h.SayHandler.BidirectionalStream(ctx, &sayBidirectionalStreamStream{stream})
+}
+
+type Say_BidirectionalStreamStream interface {
+	SendMsg(interface{}) error
+	RecvMsg(interface{}) error
+	Close() error
+	Send(*model.SResponse) error
+	Recv() (*model.SRequest, error)
+}
+
+type sayBidirectionalStreamStream struct {
+	stream server.Stream
+}
+
+func (x *sayBidirectionalStreamStream) Close() error {
+	return x.stream.Close()
+}
+
+func (x *sayBidirectionalStreamStream) SendMsg(m interface{}) error {
+	return x.stream.Send(m)
+}
+
+func (x *sayBidirectionalStreamStream) RecvMsg(m interface{}) error {
+	return x.stream.Recv(m)
+}
+
+func (x *sayBidirectionalStreamStream) Send(m *model.SResponse) error {
+	return x.stream.Send(m)
+}
+
+func (x *sayBidirectionalStreamStream) Recv() (*model.SRequest, error) {
+	m := new(model.SRequest)
+	if err := x.stream.Recv(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
