@@ -6,6 +6,7 @@ import (
 	"github.com/lpxxn/gomicrorpc/example2/lib"
 	"github.com/lpxxn/gomicrorpc/example2/proto/model"
 	"github.com/lpxxn/gomicrorpc/example2/proto/rpcapi"
+	"io"
 	"time"
 )
 
@@ -55,6 +56,9 @@ func (s *Say) Stream(ctx context.Context, req *model.SRequest, stream rpcapi.Say
 func (s *Say) BidirectionalStream(ctx context.Context, stream rpcapi.Say_BidirectionalStreamStream) error {
 	for {
 		req, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
 		if err != nil {
 			return err
 		}
@@ -64,4 +68,5 @@ func (s *Say) BidirectionalStream(ctx context.Context, stream rpcapi.Say_Bidirec
 			}
 		}
 	}
+	return nil
 }

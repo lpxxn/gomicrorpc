@@ -101,7 +101,6 @@ func TsBidirectionalStream(client rpcapi.SayService) {
 		if err := rspStream.Close(); err != nil {
 			fmt.Println("stream close err:", err)
 		}
-
 	}()
 
 	idx := 1
