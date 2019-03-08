@@ -81,6 +81,10 @@ func GetStreamValues(client rpcapi.SayService) {
 		fmt.Printf("test stream get idx %d  data  %v\n", idx, rsp)
 		idx++
 	}
+	// close the stream
+	if err := rspStream.Close(); err != nil {
+		fmt.Println("stream close err:", err)
+	}
 	fmt.Println("Read Value End")
 }
 
@@ -93,6 +97,11 @@ func TsBidirectionalStream(client rpcapi.SayService) {
 	go func() {
 		rspStream.Send(&model.SRequest{Count: 2})
 		rspStream.Send(&model.SRequest{Count: 5})
+		// close the stream
+		if err := rspStream.Close(); err != nil {
+			fmt.Println("stream close err:", err)
+		}
+
 	}()
 
 	idx := 1
