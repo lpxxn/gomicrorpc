@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type Say struct {}
+type Say struct{}
 
 var _ rpcapi.SayHandler = (*Say)(nil)
 
@@ -33,7 +33,7 @@ func (s *Say) MyName(ctx context.Context, req *model.SayParam, rsp *model.SayPar
 
 /*
  模拟得到一些数据
- */
+*/
 func (s *Say) Stream(ctx context.Context, req *model.SRequest, stream rpcapi.Say_StreamStream) error {
 
 	for i := 0; i < int(req.Count); i++ {
@@ -52,7 +52,7 @@ func (s *Say) Stream(ctx context.Context, req *model.SRequest, stream rpcapi.Say
 
 /*
  模拟数据
- */
+*/
 func (s *Say) BidirectionalStream(ctx context.Context, stream rpcapi.Say_BidirectionalStreamStream) error {
 	for {
 		req, err := stream.Recv()
@@ -60,13 +60,13 @@ func (s *Say) BidirectionalStream(ctx context.Context, stream rpcapi.Say_Bidirec
 			break
 		}
 		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(req.Count)
+		if err := stream.Send(&model.SResponse{Value: []string{lib.RandomStr(lib.Random(3, 6))}}); err != nil {
 			return err
 		}
-		for i := int64(0); i < req.Count; i++ {
-			if err := stream.Send(&model.SResponse{Value: []string {lib.RandomStr(lib.Random(3, 6))}}); err != nil {
-				return err
-			}
-		}
 	}
+	fmt.Println("end BidirectionalStream")
 	return nil
 }

@@ -94,30 +94,25 @@ func TsBidirectionalStream(client rpcapi.SayService) {
 	if err != nil {
 		panic(err)
 	}
-	// send
-	go func() {
-		rspStream.Send(&model.SRequest{Count: 2})
-		rspStream.Send(&model.SRequest{Count: 5})
-		// close the stream
-		if err := rspStream.Close(); err != nil {
-			fmt.Println("stream close err:", err)
+	for i := int64(0); i < 7; i++ {
+		if err := rspStream.Send(&model.SRequest{Count: i}); err != nil {
+			fmt.Println("send error", err)
+			break
 		}
-	}()
-
-	idx := 1
-	for {
 		rsp, err := rspStream.Recv()
-
 		if err == io.EOF {
 			break
 		} else if err != nil {
 			panic(err)
 		}
 
-		fmt.Printf("test stream get idx %d  data  %v\n", idx, rsp)
-		idx++
+		fmt.Printf("test stream get idx %d  data  %v\n", i, rsp)
 	}
-	fmt.Println("Read Value End")
+	// close the stream
+	if err := rspStream.Close(); err != nil {
+		fmt.Println("stream close err:", err)
+	}
+	fmt.Println("TsBidirectionalStream: Read Value End")
 }
 
 func NotifyTopic(service micro.Service) {
