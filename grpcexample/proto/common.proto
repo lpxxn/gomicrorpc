@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package model;
+
+message SayParam {
+    string msg = 1;
+}
+
+message Pair {
+    int32 key = 1;
+    string values = 2;
+}
+
+message SayResponse {
+    string msg = 1;
+    // 数组
+    repeated string values = 2;
+    // map
+    map<string, Pair> header = 3;
+    RespType type = 4;
+}
+
+enum RespType {
+    NONE = 0;
+    ASCEND = 1;
+    DESCEND = 2;
+}
+
+// 服务接口
+service Say {
+    rpc Hello(SayParam) returns (SayResponse) {}
+}
