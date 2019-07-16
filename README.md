@@ -1,7 +1,7 @@
 # gomicrorpc
 go micro example
 
-go-micro 框架深度学习，持续更新中：-个人博客
+go-micro 框架深度学习，持续更新中：-[个人博客](https://www.cnblogs.com/li-peng/p/10522084.html)
 go微服务框架go-micro深度学习-目录  https://www.cnblogs.com/li-peng/p/10522084.html
 
 go微服务框架go-micro深度学习(一) 整体架构介绍  https://www.cnblogs.com/li-peng/p/9558421.html    
