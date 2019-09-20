@@ -15,4 +15,4 @@ go微服务框架go-micro深度学习(四) rpc方法调用过程详解  https://
 go微服务框架go-micro深度学习(五) stream 调用过程详解 https://www.cnblogs.com/li-peng/p/10510198.html
 
 
-`注意，有些帖子是2018年写的，2019年go-micro的源码有些变动，默认的注册方式从consul变成了mdns`
+`注意，有些帖子是2018年写的，2019年go-micro的源码有很多变动，默认的注册方式从consul变成了mdns`
